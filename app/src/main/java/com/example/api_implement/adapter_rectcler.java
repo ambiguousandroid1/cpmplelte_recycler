@@ -37,7 +37,7 @@ public class adapter_rectcler extends RecyclerView.Adapter<adapter_rectcler.myVi
     public void onBindViewHolder(@NonNull myViewholder holder, int position) {
         data_model model = data.get(position);
         Picasso.get()
-                .load(model.getUrl()).into(holder.imageView);
+                .load(model.getUrl()).placeholder(R.drawable.ic_baseline_person_add_24).into(holder.imageView);
         holder.title.setText(model.getTitle());
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override

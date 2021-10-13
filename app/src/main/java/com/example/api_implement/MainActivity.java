@@ -44,21 +44,30 @@ public class MainActivity extends AppCompatActivity {
     adapter_rectcler adapter_rectcler;
     EditText search;
     CoordinatorLayout coordinatorLayout;
-
+    ProgressDialog pd ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+         pd = new ProgressDialog(MainActivity.this);
 //        textView = findViewById(R.id.text);
+
+                       pd.show();
+                       pd.setMessage("Loading...");
+                       pd.setCancelable(false);
+        //Initialize component
         recyclerView = findViewById(R.id.recyvler);
         search = findViewById(R.id.search_text);
-        coordinatorLayout=findViewById(R.id.coordinate_la);
+        coordinatorLayout = findViewById(R.id.coordinate_la);
+
+        //function for swipe delete and undo
         enableSwipeToDeleteAndUndo();
+
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                
+
             }
 
             @Override
@@ -68,10 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-          filterlist(editable.toString());
+                filterlist(editable.toString());
             }
         });
-        dialog = new ProgressDialog(getApplicationContext());
+
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -80,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 RearrangeItems();
             }
         });
-//dialog.show();
-//dialog.setCancelable(false);
+
+
         getApi();
     }
 
@@ -116,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 //                textView.append(response);
 
                 try {
-//                    dialog.dismiss();
+
                     JSONArray array = new JSONArray(response);
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject object = array.getJSONObject(i);
@@ -129,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                         adapter_rectcler = new adapter_rectcler(data_models, getApplicationContext());
                         recyclerView.setAdapter(adapter_rectcler);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        pd.dismiss();
 //
                     }
 //                   JSONObject object = array.getJSONObject(1);
@@ -144,7 +154,8 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-//                dialog.dismiss();
+                               pd.dismiss();
+
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
@@ -163,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
         adapter_rectcler = new adapter_rectcler(data_models, MainActivity.this);
         recyclerView.setAdapter(adapter_rectcler);
     }
+
     private void enableSwipeToDeleteAndUndo() {
         swipe_delete swipeToDeleteCallback = new swipe_delete(this) {
             @Override
